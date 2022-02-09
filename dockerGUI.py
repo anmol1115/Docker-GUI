@@ -28,8 +28,20 @@ class RootStructure:
 		self.defineLabelFrame()
 
 	def defineLabelFrame(self):
-		self.ImageLabelFrame = LabelFrame(self.master, text="Images", bg="#ffffff")
-		self.ContainerLabelFrame = LabelFrame(self.master, text="Containers", bg="#ffffff")
+		self.ImageLabelFrame = LabelFrame(self.master, text="Images")
+		self.ContainerLabelFrame = LabelFrame(self.master, text="Containers")
+
+	def scrollBar(self, master):
+		mycanvas = Canvas(master)
+		mycanvas.pack(side=LEFT, expand="yes", fill=BOTH)
+		myscroll = Scrollbar(master, orient=VERTICAL, command=mycanvas.yview, bg="#ffffff")
+		myscroll.pack(side=RIGHT, fill=Y)
+		mycanvas.configure(yscrollcommand=myscroll.set)
+		mycanvas.bind("<Configure>", lambda e: mycanvas.configure(scrollregion=mycanvas.bbox("all")))
+		newFrame = Frame(mycanvas)
+		mycanvas.create_window((0,0), window=newFrame, anchor="nw", width=620)
+		return newFrame
+
 
 	def topButtons(self):
 		self.frame = Frame(self.master)
@@ -42,11 +54,12 @@ class RootStructure:
 		self.master.after(0, self.ImageLabelFrame.destroy)
 		self.defineLabelFrame()
 		self.ImageLabelFrame.pack(fill="both", expand="yes", padx=5, pady=2)
+		mainFrame = self.scrollBar(self.ImageLabelFrame)
 
-		for i in range(3):
-			self.images.append(MyImageFrame(self.ImageLabelFrame, str(i)))
+		for i in range(10):
+			self.images.append(MyImageFrame(mainFrame, str(i)))
 
-		for i in range(3):
+		for i in range(10):
 			self.images[i].draw()
 
 
