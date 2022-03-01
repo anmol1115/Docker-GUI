@@ -128,6 +128,8 @@ class MyImageFrame:
 			self.run()
 		def submit(master):
 			part_cmd = ""
+			if name_check.get():
+				part_cmd += " --name="+_name.get()
 			if net_check.get():
 				part_cmd += " --net="+net_name.get()
 			if port_check.get():
@@ -144,6 +146,7 @@ class MyImageFrame:
 			master.destroy()
 			rs.imageclient.run(cmd)
 
+		name_check = StringVar()
 		net_check = StringVar()
 		port_check = StringVar()
 		vol_check = StringVar()
@@ -151,6 +154,13 @@ class MyImageFrame:
 		index = self.image.index(':')
 		name = self.image[:index]
 		top = Toplevel(self.master)
+
+		name_frame = LabelFrame(top, text="Name")
+		Checkbutton(name_frame, text="Name", variable=name_check, onvalue=1, offvalue=0).pack(anchor=W, padx=5)
+		Label(name_frame, text="Container Name").pack(side=LEFT, padx=5)
+		_name = Entry(name_frame)
+		_name.pack(side=RIGHT, padx=5)
+		name_frame.pack(anchor=N, fill=BOTH, expand="yes", padx=10, pady=1)
 
 		network_frame = LabelFrame(top, text="Network Setting")
 		Checkbutton(network_frame, text="Select Network", variable=net_check, onvalue=1, offvalue=0).pack(anchor=W, padx=5)
@@ -232,11 +242,72 @@ class RootStructure:
 
 	def showContainers(self):
 		self.refreshScreen()
-		self.ContainerLabelFrame.pack(fill="both", expand="yes", padx=5, pady=2)
+		self.ContainerLabelFrame.pack(fill=BOTH, expand="yes", padx=5, pady=2)
 
 	def showSettings(self):
 		self.refreshScreen()
 		self.SettingsLabelFrame.pack(fill=BOTH, expand="yes", padx=5, pady=2)
+
+		search_frame = LabelFrame(self.SettingsLabelFrame, text="Search Image")
+		inner_frame = Frame(search_frame)
+		Label(inner_frame, text="Enter Image Name").pack(side=LEFT, padx=10, anchor=N)
+		img_name = Entry(inner_frame)
+		img_name.pack(side=RIGHT, padx=10, fill=X, expand="yes", anchor=N)
+		inner_frame.pack(fill=X, expand="yes")
+		Button(search_frame, text="Submit", bg="#e95420").pack(anchor=E, padx=5)
+		search_frame.pack(anchor=N, fill=BOTH, expand="yes", padx=10, pady=1)
+
+		element_frame = Frame(self.SettingsLabelFrame, height=200)
+
+		inner_frame = Frame(element_frame)
+		create_net_frame = LabelFrame(inner_frame, text="Create Networks")
+		Label(create_net_frame, text="Run network Create Command").pack(anchor=W, padx=5, pady=2)
+		command_entry = Entry(create_net_frame)
+		command_entry.pack(anchor=W, fill = X, padx=5, pady=2)
+		Button(create_net_frame, text="Submit", bg="#e95420").pack(anchor=E, padx=5, pady=2)
+		create_net_frame.pack(fill=BOTH, expand="yes", padx=10, pady=1, anchor=N)
+
+		pull_frame = LabelFrame(inner_frame, text="Pull image")
+		frame1 = Frame(pull_frame)
+		Label(frame1, text="Enter Image Name").pack(side=LEFT, padx=5)
+		pull_img_name = Entry(frame1)
+		pull_img_name.pack(side=RIGHT, fill=X, padx=5)
+		frame1.pack(fill=X, expand="yes")
+		Button(pull_frame, text="Pull", bg="#e95420").pack(anchor=E, padx=5)
+		pull_frame.pack(fill=BOTH, expand="yes", padx=10, pady=1, anchor=N)
+		inner_frame.pack(side=LEFT, fill=BOTH, expand="yes", anchor=N)
+
+		inner_frame = Frame(element_frame)
+		list_net_frame = LabelFrame(inner_frame, text="List Networks")
+		Label(list_net_frame, text="List all available networks").pack(side=LEFT, padx=5, pady=2)
+		Button(list_net_frame, text="List", bg="#e95420").pack(side=RIGHT, padx=5, pady=2)
+		list_net_frame.pack(anchor=N, fill=BOTH, expand="yes", padx=10, pady=1)
+
+		login_frame = LabelFrame(inner_frame, text="Login DockerHub")
+		frame1 = Frame(login_frame)
+		Label(frame1, text="Username").pack(side=LEFT, padx=5)
+		uname = Entry(frame1)
+		uname.pack(side=RIGHT, padx=5, fill=X, expand="yes")
+		frame1.pack(fill=X, expand="yes")
+		frame2 = Frame(login_frame)
+		Label(frame2, text="Password ").pack(side=LEFT, padx=5)
+		passwd = Entry(frame2)
+		passwd.pack(side=RIGHT, padx=5, fill=X, expand="yes")
+		frame2.pack(fill=X, expand="yes")
+		Button(login_frame, text="Submit", bg="#e95420").pack(anchor=E, padx=2)
+		login_frame.pack(anchor=S, fill=BOTH, expand="yes", padx=10, pady=1)
+		inner_frame.pack(side=RIGHT, fill=BOTH, expand="yes")
+
+		element_frame.pack(anchor=N, fill=BOTH, expand="yes")
+
+		inspect_net_frame = LabelFrame(self.SettingsLabelFrame, text="Inspect Networks")
+		inner_frame = Frame(inspect_net_frame)
+		Label(inner_frame, text="Enter Network Name").pack(side=LEFT, padx=10, pady=2, anchor=N)
+		net_name = Entry(inner_frame)
+		net_name.pack(side=RIGHT, padx=10, pady=2, fill=X, expand="yes", anchor=N)
+		inner_frame.pack(fill=X, expand="yes")
+		Button(inspect_net_frame, text="Submit", bg="#e95420").pack(anchor=E, padx=5, pady=2)
+		inspect_net_frame.pack(anchor=N, fill=BOTH, expand="yes", padx=10, pady=1)
 
 if __name__ == "__main__":
 	root = Tk()
