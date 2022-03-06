@@ -1,5 +1,6 @@
 from tkinter import *
 from dockerClients import ImageClient
+from passAuth import PasswordWindow
 
 class MyImageFrame:
 	def __init__(self, master, imageName, imageInfo):
@@ -194,9 +195,9 @@ class MyImageFrame:
 		top.mainloop()
 
 class RootStructure:
-	def __init__(self, master):
+	def __init__(self, master, passwd):
 		self.master = master
-		self.imageclient = ImageClient("Admin@123")
+		self.imageclient = ImageClient(passwd)
 		self.topButtons()
 		self.defineLabelFrame()
 
@@ -310,10 +311,15 @@ class RootStructure:
 		inspect_net_frame.pack(anchor=N, fill=BOTH, expand="yes", padx=10, pady=1)
 
 if __name__ == "__main__":
-	root = Tk()
-	root.geometry("650x500")
-	root.resizable(width=False, height=False)
+	passwd = ""
+	pw = PasswordWindow()
+	passwd = pw.getPass()
 
-	rs = RootStructure(root)
+	if passwd:
+		root = Tk()
+		root.geometry("650x500")
+		root.resizable(width=False, height=False)
+	
+		rs = RootStructure(root, passwd)
 
-	root.mainloop()
+		root.mainloop()
